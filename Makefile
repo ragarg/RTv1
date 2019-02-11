@@ -3,46 +3,72 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: thgiraud <thgiraud@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/02/04 18:27:30 by jcorwin           #+#    #+#              #
-#    Updated: 2019/02/05 14:16:33 by jcorwin          ###   ########.fr        #
+#    Created: 2017/02/17 17:47:51 by thgiraud          #+#    #+#              #
+#    Updated: 2017/03/17 12:46:53 by thgiraud         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = RTv1
+NAME	= rtv1
 
-SDL_HDR = ~/Library/Frameworks/SDL2.framework/Versions/A/Headers
-SDL = ~/Library/Frameworks/
+SRC		= main.c \
+		  sdl_frame.c \
+		  sdl_putpixel.c \
+		  sphere.c \
+		  vector.c \
+		  compyle_cl.c
 
-SOURCE_PATH = ./srcs/
-SOURCE = *.c
-SRC = $(addprefix $(SOURCE_PATH), $(SOURCE))
+OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 
-OBJECTS_PATH = ./objects/
-OBJECTS = $(SOURCE:.c=.o)
-OBJ = $(addprefix $(OBJECTS_PATH), $(OBJECTS))
+# compiler
+CC		= gcc
+CFLAGS	= -Wall -Wextra -Werror
 
-INCLUDE_PATH = ./includes/
-INCLUDE = rtv1.h
-INC = $(addprefix $(INCLUDE_PATH), $(INCLUDE))
+# mlx library
+MLX		= /usr/local/lib
+MLX_LIB	= $(addprefix $(MLX),mlx.a)
+MLX_INC	= -I /usr/local/include
+MLX_LNK	= -L /usr/local/lib -l mlx -framework OpenGL -framework AppKit
 
-FLAGS = -Wall -Werror -Wextra
+# SDL library
+SDL_INC = -I ~/Library/Frameworks/SDL2.framework/Versions/A/Headers
+SDL_LNK = -F ~/Library/Frameworks/ -framework SDL2
 
-all: $(NAME)
+# ft library
+FT		= ./libft/
+FT_LIB	= $(addprefix $(FT),libft.a)
+FT_INC	= -I ./libft/includes
+FT_LNK	= -L ./libft -l ft
+
+# directories
+SRCDIR	= ./src/
+INCDIR	= ./includes/
+OBJDIR	= ./obj/
+
+all: obj $(FT_LIB) $(NAME)
+
+obj:
+	mkdir -p $(OBJDIR)
+
+$(OBJDIR)%.o:$(SRCDIR)%.c
+	$(CC) $(CFLAGS) $(SDL_INC) $(FT_INC) -I $(INCDIR) $(FT_INC) -o $@ -c $<
+
+$(FT_LIB):
+	make -C $(FT)
+
+$(MLX_LIB):
+	make -C $(MLX)
 
 $(NAME): $(OBJ)
-	gcc -o $(NAME) $(OBJ) -F $(SDL) -framework SDL2
-
-$(OBJ): $(SRC) $(INC)
-	mkdir -p $(OBJECTS_PATH)
-	cd $(OBJECTS_PATH) && gcc -c ../$(SRC) -I ../includes/ -I $(SDL_HDR) -F $(SDL)
+	$(CC) $(OBJ) $(SDL_LNK) -framework OpenCL $(FT_LNK) -framework OpenCL -lm -o $(NAME)
 
 clean:
-	rm -rf $(OBJ)
+	rm -rf $(OBJDIR)
+	make -C $(FT) clean
 
 fclean: clean
-	rm -rf $(OBJECTS_PATH)
 	rm -rf $(NAME)
+	make -C $(FT) fclean
 
 re: fclean all
