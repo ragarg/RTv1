@@ -3,36 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 12:17:22 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 12:18:16 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/24 17:21:58 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/29 22:20:08 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <string.h>
 #include "libft.h"
 
-char	*ft_strnstr(const char *string1, const char *string2, size_t num)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	size_t n;
-	size_t k;
+	size_t		i;
+	size_t		j;
 
-	if (!string2[0])
-		return ((char *)string1);
-	n = 0;
-	if (!ft_strlen(string2))
-		return ((char *)string1);
-	while (string1[n] && n < num)
+	if (!(*needle))
+		return ((char*)haystack);
+	i = 0;
+	j = 0;
+	while (haystack[i] && i + j < len)
 	{
-		if (string1[n] == string2[0])
+		if (haystack[i] == needle[j])
 		{
-			k = 0;
-			while (string1[n + k] == string2[k] && string2[k] && n + k < num)
-				k++;
-			if (!string2[k])
-				return ((char*)(string1 + n));
+			while (needle[j] && i + j < len && haystack[i + j] == needle[j])
+				j++;
+			if (!needle[j])
+				return ((char*)&haystack[i]);
 		}
-		n++;
+		j = 0;
+		i++;
 	}
 	return (NULL);
 }

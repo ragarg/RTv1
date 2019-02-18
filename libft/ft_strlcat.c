@@ -1,28 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_srrlcat.c                                       :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 12:04:12 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 12:04:59 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/24 17:51:56 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/29 20:51:42 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "stdio.h"
+#include <string.h>
 #include "libft.h"
 
-size_t		ft_strlcat(char *destptr, const char *srcptr, size_t num)
+size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {
-	size_t		dst_len;
-	size_t		src_len;
+	size_t	i;
+	char	*s1;
+	char	*s2;
+	size_t	slen;
+	size_t	dlen;
 
-	dst_len = ft_strlen(destptr);
-	src_len = ft_strlen(srcptr);
-	if (num < dst_len + 1)
-		return (src_len + num);
-	ft_strncat(destptr, srcptr, num);
-	destptr[num - 1] = 0;
-	return (dst_len + src_len);
+	slen = 0;
+	dlen = 0;
+	while (dst[dlen])
+		dlen++;
+	while (src[slen])
+		slen++;
+	if (size == 0)
+		return (size < dlen ? slen + size : slen + dlen);
+	s1 = (char*)dst;
+	s2 = (char*)src;
+	i = 0;
+	while (s1[i] && i < size - 1)
+		i++;
+	while (*s2 && i < size - 1)
+		s1[i++] = *s2++;
+	if (s2 != src)
+		s1[i] = '\0';
+	return (size < dlen ? slen + size : slen + dlen);
 }

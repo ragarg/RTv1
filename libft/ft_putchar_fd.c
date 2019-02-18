@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   ft_put_fd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 16:16:15 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 16:17:22 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/21 20:06:32 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/28 22:34:31 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
 #include "libft.h"
 
-void		ft_putchar_fd(char c, int fd)
+void	ft_putchar_fd(char c, int fd)
 {
-	write(fd, &c, 1);
+	if (fd > -1)
+		write(fd, &c, 1);
 }

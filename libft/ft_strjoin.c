@@ -3,31 +3,69 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 14:59:30 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 15:02:15 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/25 15:21:07 by jcorwin           #+#    #+#             */
+/*   Updated: 2019/01/22 19:54:05 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "libft.h"
 
-char		*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*new_str;
-	size_t	n;
-	size_t	k;
+	size_t	i;
+	size_t	len1;
+	size_t	len2;
+	char	*str;
 
 	if (!s1 || !s2)
 		return (NULL);
-	new_str = ft_strnew(ft_strlen(s1) + ft_strlen(s2));
-	if (!new_str)
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	if (!(str = (char*)malloc(sizeof(char) * (int)(len1 + len2 + 1))))
 		return (NULL);
-	n = -1;
-	k = -1;
-	while (s1[++n])
-		new_str[n] = s1[n];
-	while (s2[++k])
-		new_str[n++] = s2[k];
-	return (new_str);
+	str[len1 + len2] = '\0';
+	i = 0;
+	while (i < len1)
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (i < len1 + len2)
+	{
+		str[i] = s2[i - len1];
+		i++;
+	}
+	return (str);
+}
+
+char	*ft_rejoin(char *s1, char const *s2)
+{
+	size_t	i;
+	size_t	len1;
+	size_t	len2;
+	char	*str;
+
+	if (!s1 || !s2)
+		return (NULL);
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	if (!(str = (char*)malloc(sizeof(char) * (int)(len1 + len2 + 1))))
+		return (NULL);
+	str[len1 + len2] = '\0';
+	i = 0;
+	while (i < len1)
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (i < len1 + len2)
+	{
+		str[i] = s2[i - len1];
+		i++;
+	}
+	free(s1);
+	return (str);
 }

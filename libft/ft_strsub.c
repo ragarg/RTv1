@@ -3,22 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strsub.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 14:51:22 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 14:58:34 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/25 15:11:05 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/28 22:48:47 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <string.h>
 #include "libft.h"
 
-char		*ft_strsub(char *s, unsigned int start, size_t len)
+char	*ft_strsub(char const *s, unsigned int start, size_t len)
 {
-	char *n_s;
+	char	*str;
+	int		maxsizet;
 
-	n_s = ft_strnew(len);
-	if (!s || !n_s)
+	maxsizet = -1;
+	if (!s || start == (size_t)(maxsizet))
 		return (NULL);
-	ft_strncpy(n_s, s + start, len);
-	return (n_s);
+	if (!(str = ft_strnew(len)))
+		return (NULL);
+	while (len--)
+		str[len] = s[start + len];
+	return (str);
 }

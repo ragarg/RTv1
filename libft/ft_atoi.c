@@ -3,49 +3,76 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 13:40:26 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 13:45:43 by kmeera-r         ###   ########.fr       */
+/*   Created: 2019/01/01 01:04:18 by jcorwin           #+#    #+#             */
+/*   Updated: 2019/01/01 02:20:55 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "libft.h"
 
-static int	check(long long int uns, long long int uns_c)
+int			ft_isdigit_base(char *c, int base)
 {
-	if (uns > 0 && 0 > uns_c)
+	int		num;
+
+	if (*c >= 'a' && *c <= 'z')
+		*c = *c - 'a' + 'A';
+	if (*c >= '0' && *c <= '9')
+		num = *c - '0';
+	else if (*c >= 'A' && *c <= 'Z')
+		num = *c - 'A' + 10;
+	else
 		return (0);
-	if (uns < 0 && 0 < uns_c)
-		return (-1);
-	return (1);
+	return (num < base ? 1 : 0);
 }
 
 int			ft_atoi(const char *str)
 {
-	size_t			n;
-	char			f;
-	long long int	uns;
-	long long int	uns_c;
+	unsigned long long	n;
+	unsigned long long	maxll;
+	int					sign;
 
+	maxll = 9223372036854775807;
+	sign = 1;
+	while (*str == ' ' || *str == '\t' || *str == '\r' ||
+			*str == '\f' || *str == '\n' || *str == '\v')
+		str++;
+	if (*str == '-' || *str == '+')
+		sign = *str++ == '-' ? -1 : 1;
 	n = 0;
-	while ((str[n] == '\n' || str[n] == '\t' || str[n] == '\r'
-			|| str[n] == '\v' || str[n] == '\f' || str[n] == ' '))
-		n++;
-	f = str[n] == '-' ? -1 : 1;
-	if (str[n] == '-' || str[n] == '+')
-		n++;
-	uns = 0;
-	while (str[n] == 48)
-		n++;
-	while (ft_isdigit(str[n]))
+	while (ft_isdigit((int)*str))
+		if ((n = n * 10 + *str++ - '0') >
+			(unsigned long long)(sign == 1 ? maxll : ~maxll))
+			return (sign == 1 ? -1 : 0);
+	return ((int)(n * sign));
+}
+
+int			ft_atoi_base(const char *str, int base)
+{
+	unsigned long long	n;
+	unsigned long long	maxll;
+	int					sign;
+	unsigned long long	digit;
+	char				c;
+
+	maxll = 9223372036854775807;
+	sign = 1;
+	while (*str == ' ' || *str == '\t' || *str == '\r' ||
+			*str == '\f' || *str == '\n' || *str == '\v')
+		str++;
+	if (*str == '-' || *str == '+')
+		sign = *str++ == '-' ? -1 : 1;
+	n = 0;
+	c = *str++;
+	while (ft_isdigit_base(&c, base))
 	{
-		uns_c = uns;
-		uns *= 10;
-		uns += (str[n] - 48) * f;
-		if (check(uns, uns_c) != 1)
-			return (check(uns, uns_c));
-		n++;
+		digit = (c >= '0' && c <= '9') ? c - '0' : c - 'A' + 10;
+		if ((n = n * base + digit) >
+				(unsigned long long)(sign == 1 ? maxll : ~maxll))
+			return (sign == 1 ? -1 : 0);
+		c = *str++;
 	}
-	return ((int)uns);
+	return ((int)(n * sign));
 }

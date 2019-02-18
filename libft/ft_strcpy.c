@@ -1,23 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcpy.c                                        :+:      :+:    :+:   */
+/*   ft_str_cpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 11:52:33 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 11:54:49 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/23 18:41:53 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/29 20:41:11 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <string.h>
 #include "libft.h"
 
-char		*ft_strcpy(char *destptr, const char *srcptr)
+char	*ft_strcpy(char *dst, const char *src)
 {
-	int		len;
+	int		i;
 
-	len = ft_strlen(srcptr);
-	ft_strncpy(destptr, srcptr, len);
-	destptr[len] = 0;
-	return (destptr);
+	i = -1;
+	while (++i == 0 || src[i - 1] != '\0')
+		dst[i] = src[i];
+	return (dst);
 }

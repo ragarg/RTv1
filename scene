@@ -1,0 +1,28 @@
+//camera
+//position = (0.0, 0.0, 0.0)
+
+
+
+/sphere
+color = 0x0000ff
+center = (0.0, 0.0, 100000.0)
+radius = 500.0
+specular = 500.0
+
+/sphere
+color = 0x006000
+center = (1000.0, 1000.0, 50000.0)
+radius = 500.0
+specular = 500.0
+
+/light
+type = ambient
+intensity = 0.2
+
+
+
+/light
+type = direct
+direction = (1.0, 4.0, 4.0)
+intensity = 0.2
+

@@ -1,32 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memccpe.c                                       :+:      :+:    :+:   */
+/*   ft_memccpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 11:30:43 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/23 12:50:21 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/24 17:03:49 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/29 20:50:08 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <string.h>
 #include "libft.h"
 
-void		*ft_memccpy(void *dest, const void *src, int c, size_t num)
+void	*ft_memccpy(void *dst, const void *src, int c, size_t n)
 {
-	unsigned char	*dest_c;
-	unsigned char	*src_c;
-	size_t			n;
+	char	*ptr_d;
+	char	*ptr_s;
 
-	n = 0;
-	dest_c = (unsigned char*)dest;
-	src_c = (unsigned char*)src;
-	while (num > n)
+	ptr_d = (char*)dst;
+	ptr_s = (char*)src;
+	while (n--)
 	{
-		dest_c[n] = src_c[n];
-		if (src_c[n] == (unsigned char)c)
-			return (dest + n + 1);
-		n++;
+		*ptr_d++ = *ptr_s++;
+		if ((unsigned char)*(ptr_s - 1) == (unsigned char)c)
+			return ((void*)ptr_d);
 	}
 	return (NULL);
 }

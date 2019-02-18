@@ -13,6 +13,34 @@
 # define WIDTH 1000
 # define HEIGHT 1000
 
+typedef struct s_k
+{
+	double k1;
+	double k2;
+	double k3;
+}				t_k;
+
+typedef enum	e_light_type
+{
+	ambient = 0,
+	point,
+	direct
+}				t_light_type;
+
+typedef struct	s_vec
+{
+	double		x;
+	double		y;
+	double		z;
+}				t_vec;
+
+typedef struct	s_light
+{
+	t_light_type	type;
+	double			intens;
+	t_vec			pos;
+	t_vec			dir;
+}				t_light;
 
 typedef struct	s_img
 {
@@ -21,53 +49,37 @@ typedef struct	s_img
 	unsigned int	*img;
 }				t_img;
 
-typedef struct	s_im
+typedef struct	s_ray
 {
-	int	*img;
-}				t_im;
+	t_vec	cam;
+	double	x;
+	double	y;
+}				t_ray;
 
-
-typedef struct	s_point
+typedef struct	s_screen
 {
-	int		x;
-	int		y;
-	int		z;
-}				t_point;
-
-typedef struct	s_vec
-{
-	double		i;
-	double		j;
-	double		k;
-}				t_vec;
+	t_vec		cor;
+	t_vec		hor;
+	t_vec		ver;
+}				t_screen;
 
 typedef struct	s_sphere
 {
-	t_point			cen;
-	int				rad;
+	t_vec			cen;
+	double			rad;
 	unsigned int	color;
+	double			specular;
 }				t_sphere;
-
-typedef struct	s_ray
-{
-	t_point			start;
-	t_vec			direction;
-}				t_ray;
-
-typedef struct	s_cam
-{
-	t_point		*position;
-}				t_cam;
 
 typedef struct	s_param
 {
-	t_point		cam;
-	int			cx;
-	int			cy;
-	int			cz;
-	int			wx;
-	int			wy;
-	int			wz;
+	t_ray		ray;
+	t_screen	scr;
+	t_vec		cam;
+	int			sp_count;
+	int			l_count;
+	t_sphere	*sp;
+	t_light		*l;
 }				t_param;
 
 

@@ -3,31 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 11:33:12 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/28 06:21:13 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/24 17:00:38 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/29 20:40:48 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <string.h>
 #include "libft.h"
 
-void	*ft_memmove(void *dst, const void *src, size_t num)
+void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	unsigned char	*srcc;
-	unsigned char	*dstc;
-	size_t			n;
+	char	*ptr_dst;
+	char	*ptr_src;
 
-	n = -1;
-	if (dst == src)
-		return (NULL);
-	srcc = (unsigned char *)src;
-	dstc = (unsigned char *)dst;
-	if (srcc < dstc)
-		while ((int)(--num) >= 0)
-			*(dstc + num) = *(srcc + num);
-	else
-		while (++n < num)
-			*(dstc + n) = *(srcc + n);
+	ptr_dst = (char*)dst;
+	ptr_src = (char*)src;
+	if (ptr_dst < ptr_src)
+		while (len--)
+			*ptr_dst++ = *ptr_src++;
+	else if (ptr_dst > ptr_src)
+	{
+		ptr_dst += len - 1;
+		ptr_src += len - 1;
+		while (len--)
+			*ptr_dst-- = *ptr_src--;
+	}
 	return (dst);
 }

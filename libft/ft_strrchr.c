@@ -3,27 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kmeera-r <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/21 12:08:20 by kmeera-r          #+#    #+#             */
-/*   Updated: 2018/11/21 12:08:42 by kmeera-r         ###   ########.fr       */
+/*   Created: 2018/11/24 17:20:11 by jcorwin           #+#    #+#             */
+/*   Updated: 2018/11/29 20:45:54 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <string.h>
 #include "libft.h"
 
-char	*ft_strrchr(const char *string, int symbol)
+char	*ft_strrchr(const char *s, int c)
 {
-	int		i;
+	char	*ptr;
+	int		flag;
 
-	i = 0;
-	while (string[i])
-		i++;
-	i++;
-	while (i--)
-	{
-		if (*(string + i) == (char)symbol)
-			return ((char *)string + i);
-	}
-	return (NULL);
+	flag = 1;
+	ptr = (char*)s;
+	while (*ptr)
+		if (*(ptr++) == c)
+			flag = 0;
+	if (flag)
+		return (c == '\0' ? ptr : NULL);
+	while (*ptr != c && ptr != (char*)s)
+		ptr--;
+	return (ptr);
 }

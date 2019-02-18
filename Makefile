@@ -15,9 +15,11 @@ NAME	= rtv1
 SRC		= main.c \
 		  sdl_frame.c \
 		  sdl_putpixel.c \
-		  sphere.c \
 		  vector.c \
-		  compyle_cl.c
+		  compyle_cl.c \
+		  parser.c \
+		  parser2.c \
+		  get_next_line.c
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 
