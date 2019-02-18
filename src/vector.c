@@ -56,5 +56,5 @@ double			vec_scal(t_vec v1, t_vec v2)
 
 double			vec_len(t_vec v)
 {
-	return ((int)sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
+	return (sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
 }
