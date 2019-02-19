@@ -29,12 +29,7 @@
 # define sdl_image SDL_Surface
 # define MAX_SOURCE_SIZE (0x100000)
 
-typedef struct s_figure
-{
-	unsigned int color;
-	double k2;
-	double k3;
-}				t_figure;
+
 
 typedef struct s_k
 {
@@ -94,6 +89,14 @@ typedef struct	s_screen
 	t_vec		ver;
 }				t_screen;
 
+typedef struct	s_plane
+{
+	t_vec			point;
+	t_vec			norm;
+	unsigned int	color;
+	double			specular;
+}				t_plane;
+
 typedef struct	s_sphere
 {
 	t_vec			cen;
@@ -102,16 +105,48 @@ typedef struct	s_sphere
 	double			specular;
 }				t_sphere;
 
+typedef struct	s_cone
+{
+	t_vec			cen;
+	t_vec			dir;
+	double			cos;
+	double			specular;
+	unsigned int	color;
+}				t_con;
+
+typedef struct	s_cylinder
+{
+	t_vec			cen;
+	double			rad;
+	t_vec			dir;
+	double			specular;
+	unsigned int	color;
+}				t_cyl;
+
 typedef struct	s_param
 {
 	t_ray		ray;
 	t_screen	scr;
 	t_vec		cam;
+	int			plane_count;
 	int			sp_count;
 	int			l_count;
+	int			cyl_count;
+	int			con_count;
 	t_sphere	*sp;
 	t_light		*l;
+	t_con		*con;
+	t_cyl		*cyl;
+	t_plane		*plane;
 }				t_param;
+
+typedef struct s_figure
+{
+	unsigned int color;
+	t_vec p;
+	t_vec norm_vec;
+	double specular;
+}				t_figure;
 
 typedef struct	s_cl
 {
@@ -144,6 +179,8 @@ t_vec			vec_unit(t_vec v);
 
 void			trace_sphere(t_sdl *sdl, t_param *p);
 
+int				render(t_sdl *sdl, t_param *param);
+
 void			sdl_img_init(t_img *img, int w, int h);
 void			sdl_img_destroy(t_img *img);
 t_sdl			*sdl_init(int x, int y, int w, int h);
@@ -153,12 +190,16 @@ void			sdl_print(t_sdl *sdl);
 void			sdl_img_cpy(t_sdl *sdl, t_img *img, int x, int y);
 void			sdl_putpix(t_sdl *sdl, int x, int y, unsigned int color);
 
+void			read_file(t_param *p, char *filename);
+
 double			get_double(char *line);
 t_vec			get_vec(char *line);
+char			*get_word(char *line);
+
 void			l_real(t_param *p);
 void			sp_real(t_param *p);
-char			*get_word(char *line);
-void			read_file(t_param *p, char *filename);
-int				render(t_sdl *sdl, t_param *param);
+void			con_real(t_param *p);
+void			cyl_real(t_param *p);
+void			plane_real(t_param *p);
 
 #endif

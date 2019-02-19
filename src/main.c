@@ -13,7 +13,19 @@
 #include "rtv1.h"
 #include <stdio.h>
 
-t_param init_cam();
+void	param_init(t_param *param)
+{
+	param->plane = NULL;
+	param->l = NULL;
+	param->sp = NULL;
+	param->con = NULL;
+	param->cyl = NULL;
+	param->l_count = 0;
+	param->sp_count = 0;
+	param->plane_count = 0;
+	param->con_count = 0;
+	param->cyl_count = 0;
+}
 
 int		main(int argc, char **argv)
 {
@@ -25,16 +37,12 @@ int		main(int argc, char **argv)
 
 	if (argc != 2)
 		return (0);
-	param.l = NULL;
-	param.sp = NULL;
-	param.l_count = 0;
-	param.sp_count = 0;
+	param_init(&param);
 	read_file(&param, argv[1]);
 	param.ray.cam = vec_new(0, 0, 0);
 	param.ray.x = 0;
 	param.ray.y = 0;
 	sdl = sdl_init(700, 200, 1000, 1000);
-
 	while (running)
 	{
 		render(sdl, &param);

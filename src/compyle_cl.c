@@ -1,8 +1,7 @@
 #include "rtv1.h"
 #include <stdio.h>
 
-
-void intersection_with_sphere(t_sphere *sphere, double *t, t_param *param, t_vec ray)
+void intersection_with_sphere(t_figure *sphere, double *t, t_param *param, t_vec ray, double t_min, double t_max, t_vec source)
 {
 	t_k k;
 	double t1;
@@ -12,10 +11,9 @@ void intersection_with_sphere(t_sphere *sphere, double *t, t_param *param, t_vec
 	t_vec oc;
 
 	i = 0;
-	*t = -1;
 	while(i < param->sp_count)
 	{
-		oc = vec_frompoint(param->ray.cam, (param->sp + i)->cen);
+		oc = vec_frompoint(source, (param->sp + i)->cen);
 		k.k1 = vec_scal(ray, ray);
 		k.k2 = 2 * vec_scal(oc, ray);
 		k.k3 = vec_scal(oc, oc) - (param->sp + i)->rad * (param->sp + i)->rad;
@@ -26,21 +24,121 @@ void intersection_with_sphere(t_sphere *sphere, double *t, t_param *param, t_vec
 			t2 = (-k.k2 - sqrt(dis)) / (2 * k.k1);
 			if (t1 < t2)
 			{
-				if ((*t == -1 || *t > t1) && t1 > 1)
+				if ((*t == -1 || *t > t1) && t1 > t_min && (t_max == -1 || t1 < t_max))
 				{
 					*t = t1;
-					*sphere = *(param->sp + i);
+					sphere->p = vec_sum(source, vec_mult(*t, ray));
+					sphere->norm_vec = vec_frompoint(sphere->p, (param->sp + i)->cen);
+					sphere->norm_vec = vec_mult(1 / vec_len(sphere->norm_vec), sphere->norm_vec);
+					sphere->color = (param->sp + i)->color;
+					sphere->specular = (param->sp + i)->specular;
 				}
 			}
 			else
-			if ((*t == -1 || *t > t2) && t2 > 1)
-			{
+			if ((*t == -1 || *t > t2) && t2 > t_min && (t_max == -1 || t2 < t_max)) {
 				*t = t2;
-				*sphere = *(param->sp + i);
+				sphere->p = vec_sum(source, vec_mult(*t, ray));
+				sphere->norm_vec = vec_frompoint(sphere->p, (param->sp + i)->cen);
+				sphere->norm_vec = vec_mult(1 / vec_len(sphere->norm_vec), sphere->norm_vec);
+				sphere->color = (param->sp + i)->color;
+				sphere->specular = (param->sp + i)->specular;
 			}
 		}
 		i++;
 	}
+}
+
+void intersection_with_cone(t_figure *sphere, double *t, t_param *param, t_vec ray, double t_min, double t_max, t_vec source)
+{
+	t_k k;
+	double t1;
+	double t2;
+	double dis;
+	double p;
+	int i;
+	t_vec oc;
+
+	i = 0;
+	while(i < param->con_count)
+	{
+		p = (param->con + i)->cos * (param->con + i)->cos * vec_scal((param->con + i)->dir, (param->con + i)->dir);
+		oc = vec_frompoint(source, (param->con + i)->cen);
+		k.k1 = vec_scal(ray, ray) * p - vec_scal((param->con + i)->dir, ray) * vec_scal((param->con + i)->dir, ray);
+		k.k2 = 2 * vec_scal(oc, ray) * p - vec_scal((param->con + i)->dir, oc) * vec_scal((param->con + i)->dir, ray);
+		k.k3 = vec_scal(oc, oc) * p - vec_scal((param->con + i)->dir, oc) * vec_scal((param->con + i)->dir, oc);
+		dis = k.k2 * k.k2 - 4 * k.k1 * k.k3;
+		if (dis >= 0)
+		{
+			t2 = (-k.k2 + sqrt(dis)) / (2 * k.k1);
+			t1 = (-k.k2 - sqrt(dis)) / (2 * k.k1);
+			if (1)
+			{
+				if ((*t == -1 || *t > t1) && t1 > t_min && (t_max == -1 || t1 < t_max))
+				{
+					*t = t1;
+					sphere->p = vec_sum(source, vec_mult(*t, ray));
+					p = vec_len(vec_frompoint(sphere->p, (param->con + i)->cen)) / (param->con + i)->cos / vec_len((param->con + i)->dir);
+					if (vec_scal((param->con + i)->dir, vec_frompoint(sphere->p, (param->con + i)->cen)) / (vec_len((param->con + i)->dir) * vec_len(vec_frompoint(sphere->p, (param->con + i)->cen))) < 0)
+						p *= -1;
+					sphere->norm_vec = vec_sum(vec_mult(p, (param->con + i)->dir), vec_frompoint(sphere->p, (param->con + i)->cen));
+					sphere->norm_vec = vec_mult(1 / vec_len(sphere->norm_vec), sphere->norm_vec);
+					sphere->color = (param->con + i)->color;
+					sphere->specular = (param->con + i)->specular;
+				}
+			}
+			else
+			if ((*t == -1 || *t > t2) && t2 > t_min && (t_max == -1 || t2 < t_max)) {
+				*t = t2;
+				sphere->p = vec_sum(source, vec_mult(*t, ray));
+				p = vec_len(vec_frompoint(sphere->p, (param->con + i)->cen)) / (param->con + i)->cos / vec_len((param->con + i)->dir);
+				if (vec_scal((param->con + i)->dir, vec_frompoint(sphere->p, (param->con + i)->cen)) / (vec_len((param->con + i)->dir) * vec_len(vec_frompoint(sphere->p, (param->con + i)->cen))) < 0)
+					p *= -1;
+				sphere->norm_vec = vec_sum(vec_mult(p, (param->con + i)->dir), vec_frompoint(sphere->p, (param->con + i)->cen));
+				sphere->norm_vec = vec_mult(1 / vec_len(sphere->norm_vec), sphere->norm_vec);
+				sphere->color = (param->con + i)->color;
+				sphere->specular = (param->con + i)->specular;
+			}
+		}
+		i++;
+	}
+}
+
+void intersection_with_plane(t_figure *sphere, double *t, t_param *param, t_vec ray, double t_min, double t_max, t_vec source)
+{
+	double t1;
+	int i;
+
+	i = 0;
+	while(i < param->plane_count)
+	{
+		if (1)
+		{
+			t1 = vec_scal(source, (param->plane + i)->norm);
+			t1 += -vec_scal((param->plane + i)->point, (param->plane + i)->norm);
+			t1 /= -vec_scal(ray, (param->plane + i)->norm);
+			if ((*t == -1 || *t > t1) && t1 > t_min && (t_max == -1 || t1 < t_max)) {
+				//ft_putnbr(i);
+				*t = t1;
+				sphere->p = vec_sum(source, vec_mult(*t, ray));
+				sphere->norm_vec = (param->plane + i)->norm;
+				sphere->norm_vec = vec_mult(1 / vec_len(sphere->norm_vec), sphere->norm_vec);
+				sphere->color = (param->plane + i)->color;
+				sphere->specular = (param->plane + i)->specular;
+			}
+		}
+		i++;
+	}
+}
+
+void intersection(t_figure *sphere, double *t, t_param *param, t_vec ray, double t_min, double t_max)
+{
+	*t = -1;
+	t_max = -1;
+	t_min = 1;
+	intersection_with_sphere(sphere, t, param, ray, t_min, t_max, param->ray.cam);
+	//intersection_with_cone(sphere, t, param, ray, t_min, t_max, param->ray.cam);
+	//intersection_with_cylinder(sphere, t, param, ray, t_min, t_max);
+	intersection_with_plane(sphere, t, param, ray, t_min, t_max, param->ray.cam);
 }
 
 unsigned int new_color(unsigned int color, double light_ratio)
@@ -72,37 +170,18 @@ unsigned int new_color(unsigned int color, double light_ratio)
 
 int is_shadow(t_param *param, t_vec p, t_vec light_ray)
 {
-	t_k k;
-	double dis;
-	double t1;
-	double t2;
-	int i;
-	t_vec oc;
-
-	i = 0;
-
-	while(i < param->sp_count)
-	{
-		oc = vec_frompoint(p, (param->sp + i)->cen);
-		k.k1 = vec_scal(light_ray, light_ray);
-		k.k2 = 2 * vec_scal(oc, light_ray);
-		k.k3 = vec_scal(oc, oc) - (param->sp + i)->rad * (param->sp + i)->rad;
-		dis = k.k2 * k.k2 - 4 * k.k1 * k.k3;
-		if (dis >= 0)
-		{
-			t1 = (-k.k2 + sqrt(dis)) / (2 * k.k1);
-			t2 = (-k.k2 - sqrt(dis)) / (2 * k.k1);
-			if(t2 > 0.0001 && t2 < 1)
-				return 0;
-			if(t1 > 0.0001 && t1 < 1)
-				return 0;
-		}
-		i++;
-	}
-	return 1;
+	t_figure sphere;
+	double t = -1;
+	intersection_with_sphere(&sphere, &t, param, light_ray, 0.0001, 1, p);
+	//intersection_with_cone(&sphere, &t, param, light_ray, 0.0001, 1, p);
+	//intersection_with_cylinder(&sphere, &t, param, light_ray, 0.0001, 1, p);
+	intersection_with_plane(&sphere, &t, param, light_ray, 0.0001, 1, p);
+	if (t == -1)
+		return 1;
+	return 0;
 }
 
-unsigned int color_with_light(t_param *param, double t, t_vec ray, t_sphere sphere)
+unsigned int color_with_light(t_param *param, t_vec ray, t_figure sphere)
 {
 	double intensity;
 	int i;
@@ -115,9 +194,8 @@ unsigned int color_with_light(t_param *param, double t, t_vec ray, t_sphere sphe
 
 	i = 0;
 	intensity = 0;
-	p = vec_sum(param->ray.cam, vec_mult(t, ray));
-	normal_vec = vec_frompoint(p, sphere.cen);
-	normal_vec = vec_mult(1/ vec_len(normal_vec), normal_vec);
+	p = sphere.p;
+	normal_vec = sphere.norm_vec;
 	while (i < param->l_count)
 	{
 		if ((param->l + i)->type == ambient)
@@ -154,7 +232,7 @@ int	render(t_sdl *sdl, t_param *param) {
 	int y;
 	t_vec ray;
 
-	t_sphere sphere;
+	t_figure sphere;
 	double t;
 
 	unsigned int color = 0;
@@ -167,10 +245,9 @@ int	render(t_sdl *sdl, t_param *param) {
 		{
 			color = 0;
 			ray = vec_new(x, y, 1000);
-			intersection_with_sphere(&sphere, &t, param, ray);
-
+			intersection(&sphere, &t, param, ray, 1, 1);
 			if (t != -1)
-				color = color_with_light(param, t, ray, sphere);
+				color = color_with_light(param, ray, sphere);
 			sdl->img.img[(x +  WIDTH / 2) + (y +  HEIGHT / 2) * HEIGHT] = color;
 			y++;
 		}

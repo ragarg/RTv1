@@ -19,6 +19,7 @@ SRC		= main.c \
 		  compyle_cl.c \
 		  parser.c \
 		  parser2.c \
+		  parser3.c \
 		  get_next_line.c
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))

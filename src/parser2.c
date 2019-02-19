@@ -6,11 +6,20 @@
 /*   By: jcorwin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/12 15:34:16 by jcorwin           #+#    #+#             */
-/*   Updated: 2019/02/13 16:06:05 by jcorwin          ###   ########.fr       */
+/*   Updated: 2019/02/19 11:59:16 by jcorwin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rtv1.h"
+
+char			*get_word(char *line)
+{
+	while (*line && *line != ' ')
+		line++;
+	while (*line == ' ')
+		*line++ = '\0';
+	return (line);
+}
 
 double	get_double(char *line)
 {
@@ -63,32 +72,3 @@ t_vec	get_vec(char *line)
 	return (new);
 }
 
-void	l_real(t_param *p)
-{
-	int			i;
-	t_light		*new;
-
-	++p->l_count;
-	new = (t_light *)malloc(sizeof(t_light) * p->l_count);
-	i = -1;
-	while (++i < p->l_count - 1)
-		new[i] = p->l[i];
-	if (p->l)
-		free(p->l);
-	p->l = new;
-}
-
-void	sp_real(t_param *p)
-{
-	int			i;
-	t_sphere	*new;
-
-	++p->sp_count;
-	new = (t_sphere *)malloc(sizeof(t_sphere) * p->sp_count);
-	i = -1;
-	while (++i < p->sp_count - 1)
-		new[i] = p->sp[i];
-	if (p->sp)
-		free(p->sp);
-	p->sp = new;
-}
