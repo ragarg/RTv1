@@ -16,9 +16,9 @@ t_vec		vec_frompoint(t_vec p1, t_vec p2)
 {
 	t_vec	res;
 
-	res.x = p2.x - p1.x;
-	res.y = p2.y - p1.y;
-	res.z = p2.z - p1.z;
+	res.x = p1.x - p2.x;
+	res.y = p1.y - p2.y;
+	res.z = p1.z - p2.z;
 	return (res);
 }
 t_vec		vec_new(double x, double y, double z)

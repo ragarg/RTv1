@@ -29,6 +29,13 @@
 # define sdl_image SDL_Surface
 # define MAX_SOURCE_SIZE (0x100000)
 
+typedef struct s_figure
+{
+	unsigned int color;
+	double k2;
+	double k3;
+}				t_figure;
+
 typedef struct s_k
 {
 	double k1;

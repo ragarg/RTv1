@@ -1,6 +1,7 @@
 #include "rtv1.h"
 #include <stdio.h>
 
+
 void intersection_with_sphere(t_sphere *sphere, double *t, t_param *param, t_vec ray)
 {
 	t_k k;
@@ -25,16 +26,16 @@ void intersection_with_sphere(t_sphere *sphere, double *t, t_param *param, t_vec
 			t2 = (-k.k2 - sqrt(dis)) / (2 * k.k1);
 			if (t1 < t2)
 			{
-				if (*t == -1 || *t > t1)
+				if ((*t == -1 || *t > t1) && t1 > 1)
 				{
 					*t = t1;
 					*sphere = *(param->sp + i);
 				}
 			}
 			else
-			if (*t == -1 || *t > t2)
+			if ((*t == -1 || *t > t2) && t2 > 1)
 			{
-				*t = t1;
+				*t = t2;
 				*sphere = *(param->sp + i);
 			}
 		}
@@ -69,33 +70,79 @@ unsigned int new_color(unsigned int color, double light_ratio)
 	return (x * 256 * 256 + y * 256 + z);
 }
 
+int is_shadow(t_param *param, t_vec p, t_vec light_ray)
+{
+	t_k k;
+	double dis;
+	double t1;
+	double t2;
+	int i;
+	t_vec oc;
+
+	i = 0;
+
+	while(i < param->sp_count)
+	{
+		oc = vec_frompoint(p, (param->sp + i)->cen);
+		k.k1 = vec_scal(light_ray, light_ray);
+		k.k2 = 2 * vec_scal(oc, light_ray);
+		k.k3 = vec_scal(oc, oc) - (param->sp + i)->rad * (param->sp + i)->rad;
+		dis = k.k2 * k.k2 - 4 * k.k1 * k.k3;
+		if (dis >= 0)
+		{
+			t1 = (-k.k2 + sqrt(dis)) / (2 * k.k1);
+			t2 = (-k.k2 - sqrt(dis)) / (2 * k.k1);
+			if(t2 > 0.0001 && t2 < 1)
+				return 0;
+			if(t1 > 0.0001 && t1 < 1)
+				return 0;
+		}
+		i++;
+	}
+	return 1;
+}
+
 unsigned int color_with_light(t_param *param, double t, t_vec ray, t_sphere sphere)
 {
 	double intensity;
 	int i;
 	t_vec light_ray;
 	t_vec normal_vec;
+	t_vec r;
+	t_vec p;
 	double n_dot_l;
+	double r_dot_v;
 
 	i = 0;
 	intensity = 0;
-	normal_vec = vec_frompoint(vec_mult(t, ray), sphere.cen);
-	normal_vec.x /= vec_len(normal_vec);
-	normal_vec.y /= vec_len(normal_vec);
-	normal_vec.z /= vec_len(normal_vec);
+	p = vec_sum(param->ray.cam, vec_mult(t, ray));
+	normal_vec = vec_frompoint(p, sphere.cen);
+	normal_vec = vec_mult(1/ vec_len(normal_vec), normal_vec);
 	while (i < param->l_count)
 	{
 		if ((param->l + i)->type == ambient)
 			intensity += (param->l + i)->intens;
+
 		else
 		{
 			if ((param->l + i)->type == direct)
 				light_ray = (param->l + i)->dir;
 			if ((param->l + i)->type == point)
-				light_ray = vec_frompoint((param->l + i)->pos, vec_mult(t, ray));
-			n_dot_l = vec_scal(normal_vec, light_ray);
-			if (n_dot_l > 0)
-				intensity += (param->l + i)->intens * n_dot_l / (vec_len(normal_vec) *  vec_len(light_ray));
+				light_ray = vec_frompoint((param->l + i)->pos, p);
+			if (is_shadow(param, p, light_ray))
+			{
+				n_dot_l = vec_scal(normal_vec, light_ray);
+				if (n_dot_l > 0)
+					intensity += (param->l + i)->intens * n_dot_l / (vec_len(normal_vec) * vec_len(light_ray));
+				if (sphere.specular != -1)
+				{
+					r = vec_frompoint(vec_mult(2 * n_dot_l, normal_vec), light_ray);
+					r_dot_v = vec_scal(r, vec_mult(-1, ray));
+					if (r_dot_v > 0)
+						intensity += (param->l + i)->intens *
+									 pow(r_dot_v / (vec_len(r) * vec_len(vec_mult(-1, ray))), sphere.specular);
+				}
+			}
 		}
 		i++;
 	}

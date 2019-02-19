@@ -2,21 +2,43 @@
 //position = (0.0, 0.0, 0.0)
 
 
-
-/sphere
-color = 0x0000ff
-center = (0.0, 0.0, 10000.0)
-radius = 500.0
-specular = 500.0
-
 /sphere
 color = 0x006000
 center = (1000.0, 1000.0, 5000.0)
 radius = 500.0
-specular = 500.0
+specular = 50.0
+
+/sphere
+color = 0x006060
+center = (-1000.0, -1000.0, 5000.0)
+radius = 100.0
+specular = 50.0
+
+/sphere
+color = 0x606060
+center = (1000.0, -1000.0, 5000.0)
+radius = 700.0
+specular = 50.0
+
+
+/sphere
+color = 0x0000b0
+center = (0.0, 0.0, 600000.0)
+radius = 500000.0
+specular = -1.0
 
 /light
 type = point
-intensity = 0.8
-position = (2.0, 1.0, 0.0)
+intensity = 0.3
+position = (100.0, 1000.0, 0.0)
+
+/light
+type = point
+position = (1000.0, 100.0, 0.0)
+intensity = 0.4
+
+/light
+type = point
+position = (-1000.0, 100.0, 0.0)
+intensity = 0.3
 
