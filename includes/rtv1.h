@@ -23,8 +23,8 @@
 #  include <CL/cl.h>
 # endif
 
-# define WIDTH 1000
-# define HEIGHT 1000
+# define WIDTH 1920
+# define HEIGHT 1080
 # define STOP {printf("Error\n"); exit(0);}
 # define sdl_image SDL_Surface
 # define MAX_SOURCE_SIZE (0x100000)
@@ -78,8 +78,8 @@ typedef struct	s_sdl
 typedef struct	s_ray
 {
 	t_vec	cam;
-	double	x;
-	double	y;
+	double	cos_a;
+	double	cos_b;
 }				t_ray;
 
 typedef struct	s_screen
