@@ -20,7 +20,11 @@ SRC		= main.c \
 		  parser.c \
 		  parser2.c \
 		  parser3.c \
-		  get_next_line.c
+		  get_next_line.c \
+		  intersection_with_cone.c \
+		  intersection_with_sphere.c \
+		  intersection_with_cylinder.c \
+		  light.c
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 

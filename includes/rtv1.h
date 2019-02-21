@@ -167,6 +167,35 @@ typedef struct	s_cl
 	size_t global_item_size;
 }				t_cl;
 
+typedef struct	s_ren_light
+{
+	t_vec	light_ray;
+	double	intensity;
+	t_vec	r;
+	double	n_dot_l;
+	double	r_dot_v;
+}				t_ren_light;
+
+typedef struct	s_intersection
+{
+	t_k		k;
+	double	t1;
+	double	t2;
+	double	dis;
+	double	p;
+	int		i;
+	t_vec	oc;
+}				t_intersection;
+
+typedef struct	s_intersection2
+{
+	t_param *param;
+	t_vec ray;
+	double t_min;
+	double t_max;
+	t_vec source;
+}				t_intersection2;
+
 t_vec			vec_new(double x, double y, double z);
 t_vec			vec_frompoint(t_vec p1, t_vec p2);
 t_vec 			vec_sum(t_vec v1, t_vec v2);
@@ -201,5 +230,14 @@ void			sp_real(t_param *p);
 void			con_real(t_param *p);
 void			cyl_real(t_param *p);
 void			plane_real(t_param *p);
+unsigned int	color_with_light(t_param *param, t_vec ray, t_figure sphere);
+void			intersection_with_cone(t_figure *sphere,\
+				double *t, t_intersection2 j);
+void			intersection_with_sphere(t_figure *sphere,\
+				double *t, t_intersection2 j);
+void			intersection_with_cylinder(t_figure *sphere,\
+				double *t, t_intersection2 j);
+void			intersection_with_plane(t_figure *sphere,\
+				double *t, t_intersection2 j);
 
 #endif
