@@ -1,17 +1,16 @@
 #include "rtv1.h"
 #include <stdio.h>
 
-t_vec			rot(t_vec ray, double cos_a, double cos_b)
+t_vec			rot(double angle, t_vec u, t_vec v)
 {
-	t_vec vec_1;
-	t_vec vec_2;
 
-	vec_1 = vec_new(ray.x, ray.y * cos_a - ray.z * sqrt(1 - cos_a\
-	* cos_a), ray.z * cos_a + ray.y * sqrt(1 - cos_a * cos_a));
-	cos_a = cos_b;
-	vec_2 = vec_new(ray.x * cos_a - ray.z * sqrt(1 - cos_a * cos_a),\
-	ray.y, ray.z * cos_a + ray.x * sqrt(1 - cos_a * cos_a));
-	return (vec_sum(vec_1, vec_2));
+	t_quat quat;
+	t_quat t;
+
+	quat = create_quat(u, angle);
+	t = quat_mul_vector(quat, v);
+	t = quat_mul_quat(t, quat_invert(quat));
+	return(vec_new(t.x, t.y, t.z));
 }
 
 void		intersection_with_plane(t_figure *sphere,\
@@ -66,7 +65,12 @@ int				render(t_sdl *sdl, t_param *param)
 	t_vec		ray;
 	t_figure	sphere;
 	double		t;
+	double		angle_1;
+	double		angle_2;
 
+	angle_1 = acos(param->ray.cos_a);
+	angle_2 = acos(param->ray.cos_b);
+	printf("%f", angle_2);
 	x = -(WIDTH / 2);
 	while (x < WIDTH / 2)
 	{
@@ -74,6 +78,10 @@ int				render(t_sdl *sdl, t_param *param)
 		while (y < HEIGHT / 2)
 		{
 			ray = vec_new(x, y, 1000);
+			if (angle_1 != 0)
+				ray = rot(-angle_1, param->ray.ray, ray);
+			if (angle_2 != 0)
+				ray = rot(angle_2, param->ray.ray2, ray);
 			intersection(&sphere, &t, param, ray);
 			if (t != -1)
 				sdl_putpix(sdl, x + WIDTH / 2, y + HEIGHT / 2, \

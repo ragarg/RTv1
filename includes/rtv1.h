@@ -52,6 +52,14 @@ typedef struct	s_vec
 	double		z;
 }				t_vec;
 
+typedef struct	s_quat
+{
+	double		w;
+	double		x;
+	double		y;
+	double		z;
+}				t_quat;
+
 typedef struct	s_light
 {
 	t_light_type	type;
@@ -80,6 +88,8 @@ typedef struct	s_ray
 	t_vec	cam;
 	double	cos_a;
 	double	cos_b;
+	t_vec	ray;
+	t_vec	ray2;
 }				t_ray;
 
 typedef struct	s_screen
@@ -239,5 +249,12 @@ void			intersection_with_cylinder(t_figure *sphere,\
 				double *t, t_intersection2 j);
 void			intersection_with_plane(t_figure *sphere,\
 				double *t, t_intersection2 j);
+t_vec			vec_cross(t_vec v1, t_vec v2);
+t_quat			quat_invert(t_quat q);
+t_quat			quat_scale(t_quat q, double val);
+t_quat			quat_mul_vector(t_quat a, t_vec b);
+t_quat			quat_mul_quat(t_quat a , t_quat b);
+t_quat			create_quat(t_vec rotate_vector, double rotate_angle);
+double			quat_length(t_quat q);
 
 #endif

@@ -24,7 +24,9 @@ SRC		= main.c \
 		  intersection_with_cone.c \
 		  intersection_with_sphere.c \
 		  intersection_with_cylinder.c \
-		  light.c
+		  light.c \
+		  quaternion_1.c \
+		  quaternion_2.c
 
 OBJ		= $(addprefix $(OBJDIR),$(SRC:.c=.o))
 

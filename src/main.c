@@ -13,6 +13,18 @@
 #include "rtv1.h"
 #include <stdio.h>
 
+void	cam_init(t_param *param)
+{
+	param->ray.cam = vec_new(0, 0, -1);
+	param->ray.ray = vec_frompoint(vec_new(0, 0, 0), param->ray.cam);
+	param->ray.ray.y = 0;
+	param->ray.cos_a = vec_scal(vec_new(0, 0 ,1), param->ray.ray) / vec_len(param->ray.ray);
+	param->ray.ray2 = vec_frompoint(vec_new(0, 0, 0), param->ray.cam);
+	param->ray.cos_b = vec_scal(param->ray.ray2, param->ray.ray) / vec_len(param->ray.ray) / vec_len(param->ray.ray2);
+	param->ray.ray = vec_cross(param->ray.ray, vec_new(0, 0 , 1));
+	param->ray.ray2 = vec_cross(param->ray.ray, param->ray.ray2);
+}
+
 void	param_init(t_param *param)
 {
 	param->plane = NULL;
@@ -39,16 +51,11 @@ int		main(int argc, char **argv)
 		return (0);
 	param_init(&param);
 	read_file(&param, argv[1]);
-	param.ray.cam = vec_new(0, 0, 0);
-	param.ray.cos_b = 1;
-	param.ray.cos_a = vec_scal(vec_mult(-1, param.ray.cam), vec_new(-param.ray.cam.x, 0, -param.ray.cam.z)) / vec_len(param.ray.cam) / vec_len(vec_new(-param.ray.cam.x, 0, -param.ray.cam.z));
+	cam_init(&param);
 	sdl = sdl_init(700, 200, WIDTH, HEIGHT);
-	printf("%f ", param.ray.cos_b);
-	printf("%f", param.ray.cos_a);
 	render(sdl, &param);
 	while (running)
 	{
-
 		sdl_print(sdl);
 		if (SDL_PollEvent(&event))
 		{
